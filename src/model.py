@@ -39,5 +39,3 @@ def train_ml_pipeline(data: pd.DataFrame):
     # Train & Evaluate
     scores = cross_val_score(pipeline, X, y, cv=tscv, scoring="neg_mean_squared_error", n_jobs=-1)
     print(f"Cross-Validation Scores: {scores.mean():.4f}")
-
-train_ml_pipeline(get_merged_data())
