@@ -1,2 +1,2 @@
 # water-well-trader
-water wells
+creating a strategy using water well data. experimenting with adding more features
