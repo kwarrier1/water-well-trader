@@ -7,7 +7,7 @@ from sklearn.pipeline import Pipeline
 from plots_raw import scale_data, get_merged_data
 
 
-# Feature Engineering - Create Lag Features
+# Create lag features - to be moved
 def create_lag_features(data, lags=None):
     if lags is None:
         lags = [1, 7, 30]
@@ -16,7 +16,7 @@ def create_lag_features(data, lags=None):
     data.dropna(inplace=True)
     return data
 
-# Machine Learning Pipeline
+# Pipeline
 def train_ml_pipeline(data: pd.DataFrame):
     data = create_lag_features(data)
     tickers = ["FPI", "CWT", "AVO", "ZC=F", "CDZI"] # ETPs we are targeti
