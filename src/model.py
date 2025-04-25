@@ -194,6 +194,6 @@ def model(data: pd.DataFrame, target_cols, n_splits=5):
 # Run the time series cross-validation pipeline
 results = model(
    get_merged_data(), 
-   target_cols=["FPI", "CWT", "AVO"], 
+   target_cols=["FPI", "CWT", "AVO", "ZC=F", "CDZI"], 
    n_splits=5
 )
