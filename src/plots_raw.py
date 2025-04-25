@@ -75,7 +75,3 @@ def plot_gwe_vs_FPI(merged_data: pd.DataFrame) -> None:
 
 def plot_gwe_vs_ZCF(merged_data: pd.DataFrame) -> None:
     plot_gwe_vs_stock("ZC=F", merged_data)
-
-merged_data = get_merged_data()
-scaled_data = scale_data(merged_data, MinMaxScaler())
-gwe_etp(merged_data)
