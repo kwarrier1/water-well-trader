@@ -342,45 +342,23 @@ def walk_forward_validation(data, target_cols, initial_train_size=0.5, step_size
         avg_r2 = np.mean(results[col]["r2"])
         log.info(f"{col}: Avg RMSE={avg_rmse:.4f}, Avg MAE={avg_mae:.4f}, Avg R²={avg_r2:.4f}")
     
-    return results, best_models, df
-
-# ------------------------------ Feature Importance Analysis ------------------------------ #
-
-def analyze_feature_importance(best_models, feature_names):
-    """
-    Analyzes and visualizes feature importance from the trained models.
-    
-    Args:
-        best_models: Dictionary containing the best models for each target
-        feature_names: List or Index of feature names
-    """
-    # Convert feature_names to a list if it's not already
-    feature_names_list = list(feature_names)
-    
-    for target, model_info in best_models.items():
-        model = model_info['model']
-        
-        # Get feature importance
-        importance = model.feature_importances_
-        
-        # Sort features by importance
-        indices = np.argsort(importance)[::-1]
-        print(indices)
-        
-        # Plot feature importance (top 20)
-        plt.figure(figsize=(12, 8))
-        plt.title(f'Feature Importance for {target}')
-        ending_index = min(20, len(indices))
-        plt.bar(range(ending_index), importance[indices[:ending_index]])
-        plt.xticks(range(ending_index), [feature_names_list[i] for i in indices[:ending_index]], rotation=90)
-        plt.tight_layout()
-        plt.savefig(f'{target}_feature_importance.png')
-        plt.close()
-        
-        # Print top 10 features
-        log.info(f"\nTop features for {target}:")
-        for i in range(min(10, len(indices))):
-            log.info(f"    {feature_names_list[indices[i]]}: {importance[indices[i]]:.4f}")
+    structured_results = {
+        'metrics': results,
+        'test_indices': all_test_indices,
+        'predictions': all_predictions,
+        'actuals': all_actuals,
+        'dates': test_dates
+    }
+    save_path = '/Users/keshavwarrier/water-well-trader/model-runs'
+    df.to_csv(f"{save_path}/engineered_data.csv", index=False)
+    log.info(f"Engineered data saved to {save_path}/engineered_data.csv")
+    all_predictions_df = pd.DataFrame(all_predictions, index=test_dates)
+    all_predictions_df.to_csv(f"{save_path}/predictions.csv", index=True)   
+    log.info(f"Predictions saved to {save_path}/predictions.csv")
+    test_indices_df = pd.DataFrame(all_test_indices, columns=['Test Indices'])
+    test_indices_df.to_csv(f"{save_path}/test_indices.csv", index=False)
+    log.info(f"Test indices saved to {save_path}/test_indices.csv")
+    return structured_results, best_models, df
 
 # ------------------------------ Main Function ------------------------------ #
 
@@ -395,8 +373,8 @@ def main():
     results, best_models, engineered_df = walk_forward_validation(
         data, 
         target_cols=target_cols, 
-        initial_train_size=0.5,
-        step_size=0.25,
+        initial_train_size=0.6,
+        step_size=0.1,
         max_window_size=365  # Use at most the last year of data for training
     )
     
