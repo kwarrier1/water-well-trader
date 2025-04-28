@@ -355,9 +355,6 @@ def walk_forward_validation(data, target_cols, initial_train_size=0.5, step_size
     all_predictions_df = pd.DataFrame(all_predictions, index=test_dates)
     all_predictions_df.to_csv(f"{save_path}/predictions.csv", index=True)   
     log.info(f"Predictions saved to {save_path}/predictions.csv")
-    test_indices_df = pd.DataFrame(all_test_indices, columns=['Test Indices'])
-    test_indices_df.to_csv(f"{save_path}/test_indices.csv", index=False)
-    log.info(f"Test indices saved to {save_path}/test_indices.csv")
     return structured_results, best_models, df
 
 # ------------------------------ Main Function ------------------------------ #
@@ -373,17 +370,10 @@ def main():
     results, best_models, engineered_df = walk_forward_validation(
         data, 
         target_cols=target_cols, 
-        initial_train_size=0.6,
+        initial_train_size=0.5,
         step_size=0.1,
         max_window_size=365  # Use at most the last year of data for training
     )
-    
-    # Get feature names from the data
-    feature_names = list(engineered_df.drop(columns=["Date"] + target_cols).columns)
-    print(feature_names)
-    
-    # Analyze feature importance
-    analyze_feature_importance(best_models, feature_names)
     
     return results, best_models
 

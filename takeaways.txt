@@ -1,0 +1,20 @@
+- started out as an idea - wanted to find a cool alternative trading strategy that maybe hadn't been thought of before
+- asked chatgpt for some inspiration - got the idea to use satellite imagery of parking lots to create buy/sell signals
+- thought that was super cool but a. wanted to create a ML model of my own and b. knew my computer would not cooperate with training a huge dataset of images
+- i thought of how i could do something similar with numerical data --> came across the well water elevation idea
+- built out the LGBM model, worked on it over time, started to come together recently. Claude had some great ideas for feature engineering
+- my goal was to build a model that was quite accurate in predicting prices of some ETPs (started out with 5, reduced to 2 that worked best) and then use that model to create buy/sell signals
+- i think i did a decent job on the first part of the goal; for Cadiz (CDZI), across 5 validation windows, achieved
+    - avg RMSE: .2338
+    - avg MAE: .1784
+        - could definitely be training over a larger time period - only used 2024
+- second part: spent a while trying to figure out the trading aspect and signal generation. made most logical sense to:
+    - calculate predicted returns using tomorrows prediction and todays price, call that pred_r
+    - if pred r > some thresh_r, buy, and if pred_r < -thresh_r, sell
+    - this was catastrophically bad. nuked the whole starting portfolio
+- tried many variations, but couldn't get anywhere close to a good Sharpe
+- major takeaways:
+    - good/decent/not half bad models != good trading method. because i trained the model to predict prices rather than direction, even if my model was off by some miniscule amount, the wrong buy/sell decision was still being made
+    - lookout for bias/overfitting; since i only used one major external feature (Mean GWE), and then calculated a lot of additional features, there was probably a good amount of overfitting/feature non-independence. 
+    - in general, when vibecoding: make small improvements and test them thoroughly. asking claude to writeout a whole file, then attempting to debug it when it inevitably breaks is a nightmare. go step by step
+checkout trader.py to see how bad this strat was
